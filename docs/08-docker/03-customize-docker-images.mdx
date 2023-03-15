@@ -102,6 +102,29 @@ To confirm `ruby` is correctly installed, we can invoke the command within the i
 docker run --rm -it gableroux/editor:ubuntu-2021.1.16f1-android-0.15.0 ruby --version
 ruby 2.6.0p0 (2018-12-25 revision 66547) [x86_64-linux]
 ```
+## Example : Include Blender
+
+### Dockerfile
+```dockerfile
+ARG GAMECI_IMAGE = unityci/editor:2021.3.1f1-windows-mono-1.0.1
+FROM $GAMECI_IMAGE
+
+ARG BLENDER_SHORT_VERSION=3.4
+ARG BLENDER_FULL_VERSION=3.4.1
+
+RUN echo "BLENDER_SHORT_VERSION: $BLENDER_SHORT_VERSION"
+RUN echo "BLENDER_FULL_VERSION: $BLENDER_FULL_VERSION"
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://download.blender.org/release/Blender$BLENDER_SHORT_VERSION/blender-$BLENDER_FULL_VERSION-linux-x64.tar.xz && \
+    tar -xf blender-$BLENDER_FULL_VERSION-linux-x64.tar.xz && \
+    rm blender-$BLENDER_FULL_VERSION-linux-x64.tar.xz
+
+ENV PATH="$PATH:/blender-$BLENDER_FULL_VERSION-linux-x64"
+
+```
+### Usage
+You can build this image and upload it to your own Dockedhub registry to reuse it afterward.
 
 If you are using
 [github-actions unity-builder](https://github.com/marketplace/actions/unity-builder) you can then
